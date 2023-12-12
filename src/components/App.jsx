@@ -1,16 +1,13 @@
 import { Form } from "./Form";
 import { nanoid } from 'nanoid'
-// import { useState, useEffect } from 'react'
-// import { ContactList } from "./ContactList";
-// import { Filter } from "./Filter";
 import { ContactElement } from "./ContactElement";
 import { useDispatch, useSelector } from "react-redux";
-import { addContactAction } from "../redux/contactSlice";
+import { addContactAction, filerAction, } from "../redux/contactSlice";
 import { Filter } from "./Filter";
 
 
 export const ContactList = () => {
-
+const filter = useSelector(state => state.contact.filter)
   const { contacts } = useSelector((state) => state.contact)
   const dispatch = useDispatch(
   )
@@ -29,6 +26,26 @@ if (equalName) return alert(`${equalName.name} is already in contacts`)
 dispatch(addContactAction(addContactObj))
 
   }
+
+  const ContactFilter = evt => {
+    const value = evt.currentTarget.value
+    dispatch(filerAction(value))
+
+  };
+  const filteredContacts = () => {
+   
+    return contacts.filter((contact) => contact.name.toLowerCase().includes(filter.toLowerCase()))
+    };
+
+
+
+
+//   const getVisibleContacts = () => {
+//   const NormalizedFilter = filter.toLowerCase();
+//   return contacts.filter(contact => 
+//     contact.name.toLowerCase().includes(NormalizedFilter))
+  
+// }
   
 
 
@@ -54,30 +71,9 @@ dispatch(addContactAction(addContactObj))
 // }, [])
 
 
-//   const ContactFilter = evt => {
-//     setFilter(evt.currentTarget.value)
+ 
+ 
   
-//   };
-
-// const getVisibleContacts = () => {
-//   const NormalizedFilter = filter.toLowerCase();
-//   return contacts.filter(contact => 
-//     contact.name.toLowerCase().includes(NormalizedFilter))
-  
-// }
-
-  
-
-
-// const deleteContact = (id) => {
-//   setContacts(contacts.filter((el)=> el.id !== id))
-
-// }
-
-
-
-//   const VisibleContacts = getVisibleContacts()
-
   return (
     <div
       style={{
@@ -91,17 +87,13 @@ dispatch(addContactAction(addContactObj))
     >
       <h1 style={{margin:0}}>Phonebook</h1>
       <Form addContact={addContact} />
-      <Filter/>
+      <Filter value={filter} onChange={ContactFilter}/>
       <h2>Contacts</h2>
       <ul>
-        {contacts.map((el) => (
+        {filteredContacts().map((el) => (
           <ContactElement key={el.id } elm ={el} />
         ))}
       </ul>
-
-
-{/* <Filter value ={filter} onChange = {ContactFilter}/>
-<ContactList array = {VisibleContacts} deleteContact={deleteContact}/> */}
     </div>
   );
 
